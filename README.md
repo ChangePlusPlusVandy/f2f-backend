@@ -1,5 +1,5 @@
-# f2f-frontend
-The frontend repository for the family to family project
+# f2f-backend
+The backend repository for the family to family project
 
 
 ## Running the project
