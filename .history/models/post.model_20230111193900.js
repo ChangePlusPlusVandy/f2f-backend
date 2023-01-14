@@ -1,16 +1,7 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const postSchema= mongoose.Schema({
-    userId:{
-        type: String,
-        required: true
-    },
-    firstname: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    lastname: {
+    username: {
         type: String,
         required: true,
         trim: true
@@ -33,15 +24,15 @@ const postSchema= mongoose.Schema({
         type: String,
     },
     likes:{
-        type: Array,
+        type: [String],
         default: []
     },
     likeCount: {
         type: Number,
         default: 0
     },
-    comments: {
-        type: Array, 
+    replies: {
+        type: [String], 
         default: []
     }
 }, {

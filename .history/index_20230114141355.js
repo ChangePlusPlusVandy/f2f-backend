@@ -1,8 +1,11 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const cors = require("cors");
-const mongoose = require('mongoose');
-const VerifyToken = require("./middlewares/VerifyToken");
+import express from "express";
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+import { verifyToken } from "./middleware/VerifyToken.js";
+import usersRouter from './routes/users';
+import postsRouter from './routes/posts';
 
 dotenv.config();
 
@@ -26,8 +29,6 @@ app.get("/", (req, res) => { // Default route: Unprotected
     res.send("Express Auth Temp!!");
 });
 
-const usersRouter = require('./routes/users');
-const postsRouter =  require('./routes/posts');
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 

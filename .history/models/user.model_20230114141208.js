@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const userSchema= mongoose.Schema({
     email: {
@@ -12,27 +12,27 @@ const userSchema= mongoose.Schema({
         required: true,
         trim: true
     },
-    firstName: {
+    firstname: {
         type: String,
         required: true,
         trim: true
     },
-    lastName:{
+    lastname:{
         type: String,
         required: true,
         trim: true
     }, 
-    schoolDistrict:{
+    schooldistrict:{
         type: Number,
         required: true,
         trim: true
     }, 
-    zipCode: {
+    zipcode: {
         type: Number,
         required: true,
         trim: true
     },
-    phoneNumber: {
+    phonenumber: {
         type: Number,
         required: true,
         trim: true,

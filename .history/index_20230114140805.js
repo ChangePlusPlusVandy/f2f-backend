@@ -26,8 +26,8 @@ app.get("/", (req, res) => { // Default route: Unprotected
     res.send("Express Auth Temp!!");
 });
 
-const usersRouter = require('./routes/users');
-const postsRouter =  require('./routes/posts');
+const usersRouter= require('./routes/users');
+const postsRouter = require('./routes/posts');
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 
