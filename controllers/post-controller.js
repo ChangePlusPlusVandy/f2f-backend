@@ -70,7 +70,7 @@ const updatePost = async (req, res) => {
     }
 }
 
-//update a post:
+//like a post:
 const likePost = async (req, res) => {
     const postId = req.params.id;
     try{
