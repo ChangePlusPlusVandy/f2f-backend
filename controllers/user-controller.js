@@ -1,4 +1,5 @@
 const User = require('../models/user.model.js');
+const bcrypt = require("bcrypt");
 
 //gets all users in database
 const getAllUsers = async (req, res) => {
@@ -86,6 +87,7 @@ const updateUser = async (req, res) => {
         return res.status(400).send({message: err.message});
     }
 }
+
 
 
 
