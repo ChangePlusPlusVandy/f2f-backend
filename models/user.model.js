@@ -23,7 +23,7 @@ const userSchema= mongoose.Schema({
         trim: true
     }, 
     schoolDistrict:{
-        type: Number,
+        type: String,
         required: true,
         trim: true
     }, 
@@ -36,6 +36,10 @@ const userSchema= mongoose.Schema({
         type: Number,
         required: true,
         trim: true,
+    },
+    disability: {
+        type: Array,
+        default: [],
     }
 }, {
     timestamps: true,

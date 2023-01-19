@@ -32,7 +32,7 @@ const getUserById = async (req, res) => {
 //add a new user:
 const addUser = async (req, res) => {
     try{
-        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber} = req.body;
+        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber, disability} = req.body;
         const newUser = await User.create(req.body);
         await newUser.save();
         return res.status(200).json(newUser);
@@ -72,13 +72,14 @@ const updateUser = async (req, res) => {
         else{
             return res.status(500).send("Invalid userID query");
         }
-        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber}  = req.body;
+        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber, disability}  = req.body;
         if (email) user.email = email;
         if (password) user.password = password;
         if (firstName) user.firstName = firstName;
         if (lastName) user.lastName = lastName;
         if (schoolDistrict) user.schoolDistrict = schoolDistrict;
         if (phoneNumber) user.phoneNumber = phoneNumber;
+        if (disability) user.disability = disability;
         await user.save();
         console.log(user);
         return res.status(200).json(user);
