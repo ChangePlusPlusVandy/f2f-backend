@@ -1,6 +1,24 @@
-const mongoose = require("mongoose");
-const Comment = require('../models/comment.model.js');
+const mongoose = require('mongoose'),
+Schema=mongoose.Schema;
+//const mongoose = require("mongoose");
+//const Comment = require('../models/comment.model.js');
 
+
+const commentSchema= mongoose.Schema({
+    userId:{
+        type: String,
+        required: true,
+    },
+    content: {
+        type: String,
+    },
+    votes: {
+        type: Number,
+        default: 0
+    }
+}, {
+    timestamps: true,
+});
 
 
 
@@ -42,9 +60,14 @@ const postSchema= mongoose.Schema({
         default: 0,
     },
     comments: {
-        type: [Comment.schema],
-        default: []
+        type: [commentSchema]
     }
+    /*
+    comments: [{
+            type: mongoose.Types.ObjectId,
+            ref: 'Comment',
+    }]
+    */
 }, {
     timestamps: true,
 });

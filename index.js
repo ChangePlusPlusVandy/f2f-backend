@@ -28,8 +28,10 @@ app.get("/", (req, res) => { // Default route: Unprotected
 
 const usersRouter = require('./routes/users');
 const postsRouter =  require('./routes/posts');
+const tasksRouter = require('./routes/tasks');
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
+app.use('/tasks', tasksRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

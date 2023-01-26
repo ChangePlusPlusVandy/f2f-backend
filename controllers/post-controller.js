@@ -1,6 +1,7 @@
 const Post = require('../models/post.model.js');
 const User = require('../models/user.model.js');
 const Comment = require('../models/comment.model.js');
+const ObjectId = require('mongodb').ObjectId;
 
 
 //get all posts
@@ -10,6 +11,7 @@ const getAllPosts = async (req, res) => {
         return res.status(200).json(posts);
     } 
     catch(err){
+        console.log(err.message);
         return res.status(400).send({message: err.message});
     }
 }
@@ -18,12 +20,19 @@ const getAllPosts = async (req, res) => {
 //get post by userId:
 const getPostByUserId = async (req, res) => {
     try{
-        const {userId} = req.params.userId;
-        const post = await Post.find({"userId": userId})
-        return res.status(200).json(post);
+        console.log(req.query.userId);
+        const userId = req.query.userId;
+        if (userId){
+            const post = await Post.find({"userId": userId})
+            return res.status(200).json(post);
+        }
+        else{
+            return res.status(400).json({message: "Missing taskId"});
+        }
     }
     catch(err){
-        return res.status(400).send({message: err.message});
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
     }
 }
 
@@ -31,12 +40,21 @@ const getPostByUserId = async (req, res) => {
 const createPost = async (req, res) => {
     try{
         const {userId, firstName, lastName, disabilityTags, heading, description, votes, comments} = req.body;
-        const user = await User.findById(userId);
-        const newPost = await Post.create(req.body);
-        await newPost.save();
-        return res.status(200).json(newPost); 
+        if (userId){
+            const user = await User.find(ObjectId(userId));
+            if (!user){
+                res.status(400).json({message: "User not found"});
+            }
+            const newPost = await Post.create(req.body);
+            await newPost.save();
+            return res.status(200).json(newPost);
+        }
+        else{
+            return res.status(400).json({message: "Invalid userId query"});
+        }    
     }
     catch(err){
+        console.log(err.message);
         return res.status(400).send({message: err.message});
     }
 }
@@ -44,51 +62,51 @@ const createPost = async (req, res) => {
 //update a post:
 const updatePost = async (req, res) => {
     try{
-        const postId = req.params.postId;
-        let post;
+        const {postId} = req.body;
         if (postId){
-            post = await Post.findById(postId);
+            const post = await Post.updateOne({postId}, req.body)
+            return res.status(200).json(post);
         }
         else{
             return res.status(500).send("Invalid postID query");
         }
-        console.log(post);
-        const {userId, firstName, lastName, disabilityTags, heading, description, votes, comments} = req.body;
-        if (userId) post.userId = userId;
-        if (firstName) post.firstName= firstName;
-        if (lastName) post.lastName = lastName;
-        if (disabilityTags) post.disabilityTags = disabilityTags;
-        if (heading) post.heading = heading;
-        if (description) post.description = description;
-        if (votes) post.votes = votes;
-        if (comments) post.comments = comments;
-        await post.save();
-        return res.status(200).json(post);
     }
     catch(err){
-        console.log(error);
-        return res.status(400).send({message: err.message});
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
     }
 }
 
-//like a post:
+/*
+//comment on a post:
 const commentPost = async (req, res) => {
     try{
-        const postId = req.params.postId;
-        const {userId, content, votes} = req.body;
-        const post = await Post.findById(postId);
-        const newComment = await new Comment({
-            userId: req.body.userId,
-            content: req.body.content,
-            votes: req.body.votes,
-        });
-        await newComment.save();
-        post.comments.push(newComment);
-        await post.save();
-        return res.status(200).json(post);
+        console.log("here");
+        const {postId} = req.body;
+        if (postId){
+            const post = await Post.find(ObjectId(postId));
+            const comment = await Comment.create(req.body);
+            await comment.save();
+            if (!post.comments){
+                let commentArray = [];
+                commentArray.push(comment);
+                const updatedPost = await Post.updateOne({postId}, commentArray);
+                await updatedPost.save();
+            }
+            else{
+                post.comments.push(comment);
+                const updatedPost = await Post.updateOne({postId}, post.comments);
+                await updatedPost.save();
+            }
+            return res.status(200).json(post);
+        }
+        else{
+            return res.status(400).send("Invalid postID query");
+        }
     }
     catch(err){
-        return res.status(400).json({message: err.message});    
+        console.log(err.message);
+        return res.status(500).json({message: err.message});    
     }
 }
 
@@ -128,26 +146,28 @@ const deleteComment = async (req, res) => {
         return res.status(400).send({message: err.message});
     }
 }
+*/
 
 
 
 //delete a post:
 const deletePost = async (req, res) => {
-    const postId = req.params.postId;
     try{
+        const {postId} = req.body;
         if (postId){
-            Post.deleteOne({_id: postId}).then(() => 
-                    res.status(200).json({ message: "Post successfully deleted." })
-                );
+            const post = await Post.deleteOne({_id: postId})
+            .then(() => res.status(200).json({message: "Post deleted successfully"}))
+            .catch((error) => res.status(400).json({message: error}));
         }
         else{
-            return res.status(500).send("Invalid postID query");
+            return res.status(400).json({message: "Missing postId"});
         }
     }
     catch(err){
-        return res.status(400).send({message: err.message});
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
     }
 }
 
 
-module.exports = {getAllPosts, getPostByUserId, createPost, updatePost, commentPost, upVoteComment, deleteComment, deletePost};
+module.exports = {getAllPosts, getPostByUserId, createPost, updatePost, deletePost};

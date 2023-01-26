@@ -1,10 +1,7 @@
 const mongoose = require("mongoose");
 
+
 const taskSchema= mongoose.Schema({
-    userId:{
-        type: String,
-        required: true
-    },
     title: {
         type: String,
         required: true
@@ -12,32 +9,23 @@ const taskSchema= mongoose.Schema({
     description: {
         type: String,
     },
-    dueAt: {
+    disabilities: {
+        type: [String],
+        default: []
+    },
+    timePeriod: {
         type: String,
-        required: true
+        default: "none",
+    },
+    resources: {
+        type: String,
+        default: "none",
     },
     status:{
         type: String,
-        required: true
-    },
-    image: {
-        type: String,
-    },
-    resources:{
-        type: String
-    },
-    pointGoal:{
-        type: Number,
-    },
-    upcomingTasks: {
-        type: Array,
-        default: []
-    },
-    allTasks: {
-        type: Array, 
-        default: []
+        required: true,
+        default: "Incomplete"
     }
-
 }, {
     timestamps: true,
 });

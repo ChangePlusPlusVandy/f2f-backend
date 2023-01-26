@@ -1,5 +1,5 @@
 const User = require('../models/user.model.js');
-const bcrypt = require("bcrypt");
+const ObjectId = require('mongodb').ObjectId;
 
 //gets all users in database
 const getAllUsers = async (req, res) => {
@@ -8,24 +8,28 @@ const getAllUsers = async (req, res) => {
         return res.status(200).json(users);
     } 
     catch(err){
-        return res.status(400).send({message: err.message});
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
     }
 }
 
 //gets user by their userId:
+//request should look like: http://localhost:3001/users/byId/?userId=63c322ad12574d3da04361c8
 const getUserById = async (req, res) => {
-    const userId = req.params.id;
     try{
+        console.log(req.query.userId);
+        const userId = req.query.userId;
         if (userId){
-            const user = await User.findById(req.params.id);
+            const user = await User.find(ObjectId(userId));
             return res.status(200).json(user);
         }
         else{
-            return res.status(200).send("Invalid userID query");
+            return res.status(400).json({message: "Missing userId"});
         }
     }
     catch(err){
-        return res.status(400).send({message: err.message});
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
     }
 }
 
@@ -38,6 +42,7 @@ const addUser = async (req, res) => {
         return res.status(200).json(newUser);
     }
     catch(err){
+        console.log(err.message);
         return res.status(400).send({message: err.message});
     }
 }
@@ -45,47 +50,40 @@ const addUser = async (req, res) => {
 
 //delete a user:
 const deleteUser = async (req, res) => {
-    const userId = req.params.id;
     try{
+        console.log(req.query.userId);
+        const userId = req.query.userId;
         if (userId){
-            User.deleteOne({_id: userId}).then(() => 
-                    res.status(200).json({ message: "User successfully deleted." })
-                );
+            console.log("here");
+            const user = await User.deleteOne({_id: userId})
+            .then(() => res.status(200).json({message: "User deleted successfully"}))
+            .catch((error) => res.status(400).json({message: error}));
         }
         else{
-            return res.status(500).send("Invalid userID query");
+            return res.status(400).json({message: "Missing userId"});
         }
     }
     catch(err){
-        return res.status(400).send({message: err.message});
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
     }
 }
 
 //update a user:
 const updateUser = async (req, res) => {
-    const userId = req.params.id;
     try{
-        let user;
+        const {userId} = req.body;
         if (userId){
-            user = await User.findById(userId).exec();
+            const user = await User.updateOne({userId}, req.body)
+            return res.status(200).json(user);
         }
         else{
-            return res.status(500).send("Invalid userID query");
+            return res.status(400).json({message: "Missing userId"});
         }
-        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber, disability}  = req.body;
-        if (email) user.email = email;
-        if (password) user.password = password;
-        if (firstName) user.firstName = firstName;
-        if (lastName) user.lastName = lastName;
-        if (schoolDistrict) user.schoolDistrict = schoolDistrict;
-        if (phoneNumber) user.phoneNumber = phoneNumber;
-        if (disability) user.disability = disability;
-        await user.save();
-        console.log(user);
-        return res.status(200).json(user);
     }
     catch(err){
-        return res.status(400).send({message: err.message});
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
     }
 }
 

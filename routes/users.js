@@ -4,10 +4,10 @@ const {getAllUsers, getUserById, addUser, deleteUser, updateUser} = require("../
 
 
 router.get('/',  getAllUsers);
-router.get('/:id', getUserById);
+router.get('/byId', getUserById);
 router.post('/', addUser);
-router.delete('/:id', deleteUser);
-router.put('/:id', updateUser);
+router.delete('/', deleteUser);
+router.put('/', updateUser);
 
 
 
