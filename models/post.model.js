@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
+const Comment = require('../models/comment.model.js');
+
+
+
 
 const postSchema= mongoose.Schema({
     userId:{
         type: String,
-        required: true
+        required: true,
     },
     firstName: {
         type: String,
@@ -14,6 +18,10 @@ const postSchema= mongoose.Schema({
         type: String,
         required: true,
         trim: true
+    },
+    disabilityTags:{
+        type: Array,
+        default: [],
     },
     heading:{
         type: String,
@@ -29,19 +37,12 @@ const postSchema= mongoose.Schema({
         max: 500,
         trim: true
     },
-    image: {
-        type: String,
-    },
-    likes:{
-        type: Array,
-        default: []
-    },
-    likeCount: {
+    votes: {
         type: Number,
-        default: 0
+        default: 0,
     },
     comments: {
-        type: Array, 
+        type: [Comment.schema],
         default: []
     }
 }, {
