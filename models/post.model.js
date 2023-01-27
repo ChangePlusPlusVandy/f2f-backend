@@ -1,31 +1,53 @@
-const mongoose = require('mongoose'),
-Schema=mongoose.Schema;
-//const mongoose = require("mongoose");
-//const Comment = require('../models/comment.model.js');
+const mongoose = require('mongoose');
 
 
-const commentSchema= mongoose.Schema({
-    userId:{
+
+const replySchema = mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    replyBody: {
         type: String,
-        required: true,
+        trim: true,
+    },
+    upvotedBy: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        }
+    ],
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    },
+});
+
+const commentSchema = mongoose.Schema({
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     content: {
         type: String,
+        trim: true
     },
-    votes: {
-        type: Number,
-        default: 0
-    }
-}, {
-    timestamps: true,
-});
-
+    replies: [replySchema],
+    upvotedBy: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      ]
+    }, {
+        timestamps: true,
+    });
 
 
 const postSchema= mongoose.Schema({
     userId:{
-        type: String,
-        required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     },
     firstName: {
         type: String,
@@ -55,19 +77,21 @@ const postSchema= mongoose.Schema({
         max: 500,
         trim: true
     },
-    votes: {
-        type: Number,
-        default: 0,
+    upvotedBy: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+      ],
+    voteCount: {
+        type: Number, 
+        default: 0
     },
-    comments: {
-        type: [commentSchema]
-    }
-    /*
-    comments: [{
-            type: mongoose.Types.ObjectId,
-            ref: 'Comment',
-    }]
-    */
+    comments: [commentSchema],
+    commentCount: {
+        type: Number, 
+        default: 0
+    },
 }, {
     timestamps: true,
 });

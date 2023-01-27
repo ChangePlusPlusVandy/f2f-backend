@@ -1,6 +1,5 @@
 const Post = require('../models/post.model.js');
 const User = require('../models/user.model.js');
-const Comment = require('../models/comment.model.js');
 const ObjectId = require('mongodb').ObjectId;
 
 
