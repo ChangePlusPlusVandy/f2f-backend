@@ -38,7 +38,7 @@ const getPostByUserId = async (req, res) => {
 //create a news post:
 const createPost = async (req, res) => {
     try{
-        const {userId, firstName, lastName, disabilityTags, heading, description, votes, comments} = req.body;
+        const {userId, firstName, lastName, disabilityTags, heading, description, comments} = req.body;
         if (userId){
             const user = await User.find(ObjectId(userId));
             if (!user){

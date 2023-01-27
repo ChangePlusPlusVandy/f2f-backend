@@ -36,7 +36,7 @@ const getUserById = async (req, res) => {
 //add a new user:
 const addUser = async (req, res) => {
     try{
-        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber, disability} = req.body;
+        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber, disability, posts} = req.body;
         const newUser = await User.create(req.body);
         await newUser.save();
         return res.status(200).json(newUser);

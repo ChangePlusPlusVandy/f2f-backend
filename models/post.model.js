@@ -11,16 +11,8 @@ const replySchema = mongoose.Schema({
         type: String,
         trim: true,
     },
-    upvotedBy: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-        }
-    ],
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    },
+}, {
+    timestamps: true,
 });
 
 const commentSchema = mongoose.Schema({
@@ -33,12 +25,6 @@ const commentSchema = mongoose.Schema({
         trim: true
     },
     replies: [replySchema],
-    upvotedBy: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-        },
-      ]
     }, {
         timestamps: true,
     });
@@ -77,24 +63,12 @@ const postSchema= mongoose.Schema({
         max: 500,
         trim: true
     },
-    upvotedBy: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-        },
-      ],
-    voteCount: {
-        type: Number, 
-        default: 0
-    },
-    comments: [commentSchema],
-    commentCount: {
-        type: Number, 
-        default: 0
-    },
+    comments: [commentSchema]
 }, {
     timestamps: true,
 });
 
 const Post = mongoose.model('Post', postSchema);
-module.exports = Post;
+const Comment = mongoose.model('Comment', commentSchema);
+const Reply = mongoose.model('Reply', replySchema);
+module.exports = Post, Comment, Reply;
