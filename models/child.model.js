@@ -19,7 +19,8 @@ const childSchema= mongoose.Schema({
         type: Number
     },
     completedTasks: {
-        type: [String]
+        type: Array,
+        default:[]
     },
 }, {
     timestamps: true,

@@ -86,8 +86,10 @@ const addCompletedTask = async (req, res) => {
         const {taskId} = req.body;
         if (userId){
             const child= await Child.find(ObjectId(userId));
-            let updatedCompletedTasks = {};
-            updatedCompletedTasks = child.completedTasks;
+            console.log(child);
+            console.log(child[0].completedTasks);
+            let updatedCompletedTasks = [];
+            updatedCompletedTasks = child[0].completedTasks;
             updatedCompletedTasks.push(taskId);
             const updatedChild = await Child.updateOne(
                 {_id: req.body.userId},
