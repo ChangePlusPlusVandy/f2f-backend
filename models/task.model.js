@@ -6,7 +6,7 @@ const taskSchema= mongoose.Schema({
         type: String,
         required: true
     },
-    description: {
+    details: {
         type: String,
     },
     disabilities: {
@@ -17,14 +17,11 @@ const taskSchema= mongoose.Schema({
         type: String,
         default: "none",
     },
-    resources: {
-        type: String,
-        default: "none",
+    minAge: {
+        type: Number,
     },
-    status:{
-        type: String,
-        required: true,
-        default: "Incomplete"
+    maxAge: {
+        type: Number,
     }
 }, {
     timestamps: true,

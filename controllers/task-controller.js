@@ -57,11 +57,33 @@ const getTaskByDisability = async (req, res) => {
     }
 }
 
+//get task by age:
+const getTaskByAge = async (req, res) => {
+    try{
+        const age = req.body.disability;
+        const allTasks = await Task.find();
+        let ageTasks = [];
+        allTasks.forEach(task => {
+            let minAge = task.minAge;
+            let maxAge = task.maxAge;
+            if (age >= minAge && age <= maxAge){
+                ageTasks.push(task);
+            }
+        });
+        return res.status(200).json(ageTasks);
+    }
+    catch(err){
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
+    }
+}
+
+
 
 //create a new task:
 const createTask = async (req, res) => {
     try{
-        const {title, description, disabilities, timePeriod, resources, status} = req.body;
+        const {title, details, disabilities, timePeriod, age} = req.body;
         const newTask = await Task.create(req.body);
         await newTask.save();
         return res.status(200).json(newTask); 
@@ -111,4 +133,4 @@ const deleteTask = async (req, res) => {
 
 
 
-module.exports = {getAllTasks, getTaskById, getTaskByDisability, createTask, updateTask, deleteTask};
+module.exports = {getAllTasks, getTaskById, getTaskByDisability, getTaskByAge, createTask, updateTask, deleteTask};

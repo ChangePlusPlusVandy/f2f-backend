@@ -1,35 +1,5 @@
 const mongoose = require("mongoose");
 
-const taskSchema= mongoose.Schema({
-    userId:{
-        type: String,
-        required: true
-    },
-    title: {
-        type: String,
-        required: true
-    },
-    dueAt: {
-        type: String,
-        required: true
-    },
-    content:{
-        type: String,
-        required: true,
-    },
-    status:{
-        type: String,
-        required: true
-    },
-    image: {
-        type: String,
-    },
-    resources:{
-        type: String
-    },
-}, {
-    timestamps: true,
-});
 
 const userSchema= mongoose.Schema({
     email: {
@@ -68,16 +38,9 @@ const userSchema= mongoose.Schema({
         required: true,
         trim: true,
     },
-    disability: {
-        type: Array,
-        default: [],
-    },
-    posts: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Post',
-        },
-      ],
+    children: {
+        type: [String],
+    }
 }, {
     timestamps: true,
 });

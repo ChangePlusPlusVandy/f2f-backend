@@ -36,10 +36,70 @@ const getUserById = async (req, res) => {
 //add a new user:
 const addUser = async (req, res) => {
     try{
-        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber, disability, posts} = req.body;
+        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber, children} = req.body;
         const newUser = await User.create(req.body);
         await newUser.save();
         return res.status(200).json(newUser);
+    }
+    catch(err){
+        console.log(err.message);
+        return res.status(400).send({message: err.message});
+    }
+}
+
+const addChild = async (req, res) => {
+    try{
+        const userId = req.body.userId;
+        const childId = req.body.childId;
+        if (userId && childId){
+            const user = await User.find({_id: userUd});
+            if (user){
+                let curChildren = user.children;
+                let newChildren = curChildren.push(childId);
+                const updatedUser = await user.updateOne(
+                {_id: userId},
+                {$set: {
+                    children: newChildren
+                }}
+            );
+            }
+            else{
+                return res.status(400).json({message: "Could not find user"});
+            }
+        }
+        else{
+            return res.status(400).json({message: "Missing userId or childId"});
+        }
+    }
+    catch(err){
+        console.log(err.message);
+        return res.status(400).send({message: err.message});
+    }
+}
+
+const deleteChild = async (req, res) => {
+    try{
+        const userId = req.body.userId;
+        const childId = req.body.childId;
+        if (userId && childId){
+            const user = await User.find({_id: userUd});
+            if (user){
+                let curChildren = user.children;
+                let newChildren = curChildren.filter(child=> child !== childId)
+                const updatedUser = await user.updateOne(
+                {_id: userId},
+                {$set: {
+                    children: newChildren
+                }}
+            );
+            }
+            else{
+                return res.status(400).json({message: "Could not find user"});
+            }
+        }
+        else{
+            return res.status(400).json({message: "Missing userId or childId"});
+        }
     }
     catch(err){
         console.log(err.message);
@@ -90,4 +150,4 @@ const updateUser = async (req, res) => {
 
 
 
-module.exports = {getAllUsers, getUserById, addUser, deleteUser, updateUser};
+module.exports = {getAllUsers, getUserById, addUser, addChild, deleteChild, deleteUser, updateUser};

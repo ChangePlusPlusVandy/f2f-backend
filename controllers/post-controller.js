@@ -11,7 +11,7 @@ const getAllPosts = async (req, res) => {
     } 
     catch(err){
         console.log(err.message);
-        return res.status(400).send({message: err.message});
+        return res.status(500).send({message: err.message});
     }
 }
 
@@ -26,7 +26,7 @@ const getPostByUserId = async (req, res) => {
             return res.status(200).json(post);
         }
         else{
-            return res.status(400).json({message: "Missing taskId"});
+            return res.status(500).json({message: "Missing taskId"});
         }
     }
     catch(err){
@@ -54,7 +54,7 @@ const createPost = async (req, res) => {
     }
     catch(err){
         console.log(err.message);
-        return res.status(400).send({message: err.message});
+        return res.status(500).send({message: err.message});
     }
 }
 
