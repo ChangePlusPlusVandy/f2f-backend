@@ -6,9 +6,9 @@ const {getAllUsers, getUserById, addUser, addChild, deleteChild, deleteUser, upd
 router.get('/',  getAllUsers);
 router.get('/byId', getUserById);
 router.post('/', addUser);
-router.delete('/', deleteUser);
-router.put('/', updateUser);
 router.put('/addChild', addChild);
+router.put('/', updateUser);
+router.delete('/', deleteUser);
 router.delete('/deleteChild', deleteChild);
 
 

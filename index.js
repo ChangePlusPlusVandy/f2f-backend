@@ -33,8 +33,6 @@ app.use('/users', usersRouter);
 app.use('/children', childrenRouter);
 app.use('/tasks', tasksRouter);
 
-//const postsRouter =  require('./routes/posts');
-//app.use('/posts', postsRouter);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

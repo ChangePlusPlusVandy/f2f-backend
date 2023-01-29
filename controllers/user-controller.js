@@ -1,5 +1,5 @@
 const User = require('../models/user.model.js');
-const ObjectId = require('mongodb').ObjectId;
+const Child = require('../models/child.model.js');
 
 //gets all users in database
 const getAllUsers = async (req, res) => {
@@ -14,13 +14,12 @@ const getAllUsers = async (req, res) => {
 }
 
 //gets user by their userId:
-//request should look like: http://localhost:3001/users/byId/?userId=63c322ad12574d3da04361c8
 const getUserById = async (req, res) => {
     try{
         console.log(req.query.userId);
         const userId = req.query.userId;
         if (userId){
-            const user = await User.find(ObjectId(userId));
+            const user = await User.findById(userId);
             return res.status(200).json(user);
         }
         else{
@@ -47,21 +46,25 @@ const addUser = async (req, res) => {
     }
 }
 
+//adds child to child array
 const addChild = async (req, res) => {
     try{
         const userId = req.body.userId;
         const childId = req.body.childId;
         if (userId && childId){
-            const user = await User.find({_id: userUd});
-            if (user){
-                let curChildren = user.children;
-                let newChildren = curChildren.push(childId);
-                const updatedUser = await user.updateOne(
-                {_id: userId},
-                {$set: {
-                    children: newChildren
-                }}
-            );
+            const user = await User.find({_id: userId});
+            const child = await Child.findById(childId);
+            if (user && child){
+                let newChildren = [];
+                newChildren = user[0].children;
+                newChildren.push(childId);
+                const updatedUser = await User.updateOne(
+                    {_id: userId},
+                    {$set: {
+                        children: newChildren
+                    }}
+                );
+                return res.status(200).json(updatedUser);
             }
             else{
                 return res.status(400).json({message: "Could not find user"});
@@ -77,24 +80,28 @@ const addChild = async (req, res) => {
     }
 }
 
+//deletes child from child array
 const deleteChild = async (req, res) => {
     try{
         const userId = req.body.userId;
         const childId = req.body.childId;
         if (userId && childId){
-            const user = await User.find({_id: userUd});
-            if (user){
-                let curChildren = user.children;
-                let newChildren = curChildren.filter(child=> child !== childId)
-                const updatedUser = await user.updateOne(
-                {_id: userId},
-                {$set: {
-                    children: newChildren
-                }}
-            );
+            const user = await User.find({_id: userId});
+            const child = await Child.findById(childId);
+            if (user && child){
+                let newChildren = [];
+                newChildren = user[0].children;
+                newChildren = newChildren.filter(child=> child !== childId);
+                const updatedUser = await User.updateOne(
+                    {_id: userId},
+                    {$set: {
+                        children: newChildren
+                    }}
+                );
+                return res.status(200).json(updatedUser);
             }
             else{
-                return res.status(400).json({message: "Could not find user"});
+                return res.status(400).json({message: "Could not find user or child"});
             }
         }
         else{

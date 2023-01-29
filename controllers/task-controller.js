@@ -1,5 +1,4 @@
 const Task = require('../models/task.model.js');
-const ObjectId = require('mongodb').ObjectId;
 
 
 
@@ -22,7 +21,7 @@ const getTaskById = async (req, res) => {
         console.log(req.query.taskId);
         const taskId = req.query.taskId;
         if (taskId){
-            const task = await Task.find(ObjectId(req.query.taskId));
+            const task = await Task.findById(req.query.taskId);
             return res.status(200).json(task);
         }
         else{
@@ -60,7 +59,7 @@ const getTaskByDisability = async (req, res) => {
 //get task by age:
 const getTaskByAge = async (req, res) => {
     try{
-        const age = req.body.disability;
+        const age = req.body.age;
         const allTasks = await Task.find();
         let ageTasks = [];
         allTasks.forEach(task => {
@@ -71,6 +70,19 @@ const getTaskByAge = async (req, res) => {
             }
         });
         return res.status(200).json(ageTasks);
+    }
+    catch(err){
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
+    }
+}
+
+//get task by time:
+const getTaskByTime = async (req, res) => {
+    try{
+        const timePeriod = req.body.timePeriod;
+        const allTasks = await Task.find({timePeriod: timePeriod});
+        return res.status(200).json(allTasks);
     }
     catch(err){
         console.log(err.message);
@@ -97,7 +109,7 @@ const createTask = async (req, res) => {
 //update a task:
 const updateTask = async (req, res) => {
     try{
-        const {taskId} = req.body;
+        const taskId = req.body.taskId;
         if (taskId){
             const task = await Task.updateOne({taskId}, req.body)
             return res.status(200).json(task);
@@ -115,7 +127,7 @@ const updateTask = async (req, res) => {
 //delete a task:
 const deleteTask = async (req, res) => {
     try{
-        const {taskId} = req.body;
+        const {taskId} = req.query;
         if (taskId){
             const task = await Task.deleteOne({_id: taskId})
             .then(() => res.status(200).json({message: "Task deleted successfully"}))
@@ -133,4 +145,4 @@ const deleteTask = async (req, res) => {
 
 
 
-module.exports = {getAllTasks, getTaskById, getTaskByDisability, getTaskByAge, createTask, updateTask, deleteTask};
+module.exports = {getAllTasks, getTaskById, getTaskByDisability, getTaskByAge, getTaskByTime, createTask, updateTask, deleteTask};
