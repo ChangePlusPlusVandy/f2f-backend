@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const ObjectId = require('mongodb').ObjectId;
 
 
 const userSchema= mongoose.Schema({
@@ -39,7 +40,7 @@ const userSchema= mongoose.Schema({
         trim: true,
     },
     children: {
-        type: [String],
+        type: [ObjectId],
     }
 }, {
     timestamps: true,

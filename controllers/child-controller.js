@@ -1,6 +1,6 @@
 const Child = require('../models/child.model.js');
 const Task = require('../models/task.model.js');
-const User = require('../models/user.model.js');
+const ObjectId = require('mongodb').ObjectId;
 
 //get all children:
 const getChildren = async (req, res) => {
@@ -93,11 +93,9 @@ const addCompletedTask = async (req, res) => {
         if (childId && taskId){
             const task = await Task.findById(taskId);
             const child= await Child.findById(childId);
-            //console.log(child);
-            //console.log(child[0].completedTasks);
             let updatedCompletedTaks = [];
             updatedCompletedTasks = child.completedTasks;
-            updatedCompletedTasks.push(taskId);
+            updatedCompletedTasks.push(ObjectId(taskId));
             const updatedChild = await Child.updateOne(
                 {_id: childId},
                 {$set: {
@@ -117,7 +115,43 @@ const addCompletedTask = async (req, res) => {
     }
 }
 
+//deletes child from child array
+const deleteCompletedTask = async (req, res) => {
+    try{
+        const childId = req.body.childId;
+        const taskId = req.body.taskId;
+        if (taskId && childId){
+            const child = await Child.findById(childId);
+            const task = await Task.findById(ObjectId(taskId));
+            if (child && task){
+                let newTasks = [];
+                newTasks = child.completedTasks;
+                //console.log(newChildren);
+                newTasks = newTasks.filter(t=> !(t.equals(ObjectId(taskId))));
+                //console.log(newChildren);
+                const updatedChild = await Child.updateOne(
+                    {_id: childId},
+                    {$set: {
+                        completedTasks: newTasks
+                    }}
+                );
+                return res.status(200).json(updatedChild);
+            }
+            else{
+                return res.status(400).json({message: "Could not find child or task"});
+            }
+        }
+        else{
+            return res.status(400).json({message: "Missing childId or taskId"});
+        }
+    }
+    catch(err){
+        console.log(err.message);
+        return res.status(400).send({message: err.message});
+    }
+}
 
 
 
-module.exports = {getChildren, getChildById, addChild, deleteChild, updateChild, addCompletedTask};
+
+module.exports = {getChildren, getChildById, addChild, deleteChild, updateChild, addCompletedTask, deleteCompletedTask};

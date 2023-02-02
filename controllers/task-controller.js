@@ -37,17 +37,15 @@ const getTaskById = async (req, res) => {
 
 
 
-
+//get task by specified attribute(s) in query
 const getTaskByAttributes = async (req, res) => {
     try {
         const disability = req.query.disability;
-       // console.log(disability);
         const age = req.query.age;
-       // console.log(age);
         const time = req.query.time;
-       //console.log(time);
         const allTasks = await Task.find();
         if (disability && age && time){
+            console.log("here1");
             let filteredTasks = [];
             allTasks.forEach(task => {
                 let dis = task.disabilities;
@@ -57,14 +55,9 @@ const getTaskByAttributes = async (req, res) => {
                     }
                 }
             });
-            //console.log(filteredTasks);
-            //console.log("here");
-            //console.log(filteredTasks);
             let filteredByAgeAndTime = [];
             for(let i = 0; i < filteredTasks.length; i++){
                 let curTask = filteredTasks[i];
-                console.log(curTask);
-                console.log(curTask.minAge);
                 if (age>=curTask.minAge && age<=curTask.maxAge && curTask.timePeriod==time){
                     filteredByAgeAndTime.push(curTask);
                 }
@@ -88,9 +81,8 @@ const getTaskByAttributes = async (req, res) => {
                     filteredByAge.push(curTask);
                 }
             }
-            return res.status(200).json(filteredByAgeAndTime);
+            return res.status(200).json(filteredByAge);
         }
-        /*
         else if (disability && time){
             let filteredTasks = [];
             allTasks.forEach(task => {
@@ -110,11 +102,10 @@ const getTaskByAttributes = async (req, res) => {
             }
             return res.status(200).json(filteredByTime);
         }
-                                */
         else if (age && time){
             let filteredByAgeAndTime = [];
             for(let i = 0; i < allTasks.length; i++){
-                let curTask = filteredTasks[i];
+                let curTask = allTasks[i];
                 if (age>=curTask.minAge && age<=curTask.maxAge && curTask.timePeriod==time){
                     filteredByAgeAndTime.push(curTask);
                 }
@@ -136,15 +127,22 @@ const getTaskByAttributes = async (req, res) => {
         else if (age){
             let filteredByAge = [];
             for(let i = 0; i < allTasks.length; i++){
-                let curTask = filteredTasks[i];
+                let curTask = allTasks[i];
                 if (age>=curTask.minAge && age<=curTask.maxAge){
-                    filteredByAgeAndTime.push(curTask);
+                    filteredByAge.push(curTask);
                 }
             }
-            return res.status(200).json(filteredByAgeAndTime);
+            return res.status(200).json(filteredByAge);
         }
         else if (time){
-            let filteredByTime = allTasks.filter(task => )
+            let filteredByTime = [];
+            for(let i = 0; i < allTasks.length; i++){
+                let curTask = allTasks[i];
+                if (curTask.timePeriod == time){
+                    filteredByTime.push(curTask);
+                }
+            }
+            return res.status(200).json(filteredByTime);
         }
     }
     catch(err){

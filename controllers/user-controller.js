@@ -1,5 +1,6 @@
 const User = require('../models/user.model.js');
 const Child = require('../models/child.model.js');
+const ObjectId = require('mongodb').ObjectId;
 
 //gets all users in database
 const getAllUsers = async (req, res) => {
@@ -57,7 +58,7 @@ const addChild = async (req, res) => {
             if (user && child){
                 let newChildren = [];
                 newChildren = user[0].children;
-                newChildren.push(childId);
+                newChildren.push(ObjectId(childId));
                 const updatedUser = await User.updateOne(
                     {_id: userId},
                     {$set: {
@@ -86,12 +87,14 @@ const deleteChild = async (req, res) => {
         const userId = req.body.userId;
         const childId = req.body.childId;
         if (userId && childId){
-            const user = await User.find({_id: userId});
-            const child = await Child.findById(childId);
+            const user = await User.findById(userId);
+            const child = await Child.findById(ObjectId(childId));
             if (user && child){
                 let newChildren = [];
-                newChildren = user[0].children;
-                newChildren = newChildren.filter(child=> child !== childId);
+                newChildren = user.children;
+                //console.log(newChildren);
+                newChildren = newChildren.filter(c=> !(c.equals(ObjectId(child._id))));
+                //console.log(newChildren);
                 const updatedUser = await User.updateOne(
                     {_id: userId},
                     {$set: {

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const ObjectId = require('mongodb').ObjectId;
 
 const childSchema= mongoose.Schema({
     firstName: {
@@ -19,7 +20,7 @@ const childSchema= mongoose.Schema({
         type: Number
     },
     completedTasks: {
-        type: Array,
+        type:[ObjectId],
         default:[]
     },
 }, {
