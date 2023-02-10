@@ -10,19 +10,13 @@ const childSchema= mongoose.Schema({
         type: [String],
         default: []
     },
-    birthMonth: {
-        type: Number
-    },
-    birthDay: {
-        type: Number
-    },
-    birthYear: {
-        type: Number
+    birthDate: {
+        type: Date
     },
     completedTasks: {
         type:[ObjectId],
         default:[]
-    },
+    }
 }, {
     timestamps: true,
 });

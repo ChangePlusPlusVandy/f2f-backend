@@ -1,7 +1,6 @@
 const Task = require('../models/task.model.js');
 
 
-
 //get all tasks:
 const getAllTasks = async (req, res) => {
     try {
@@ -34,115 +33,62 @@ const getTaskById = async (req, res) => {
     }
 }
 
+function mongoQueryHelper(prop,value){
+    return value != null ? {prop: value} : null;
+}
+ 
 
-
-
-//get task by specified attribute(s) in query
 const getTaskByAttributes = async (req, res) => {
     try {
         const disability = req.query.disability;
         const age = req.query.age;
         const time = req.query.time;
-        const allTasks = await Task.find();
         if (disability && age && time){
-            console.log("here1");
-            let filteredTasks = [];
-            allTasks.forEach(task => {
-                let dis = task.disabilities;
-                for (let i = 0; i < dis.length; i++){
-                    if (dis[i] === disability){
-                        filteredTasks.push(task);
-                    }
-                }
+            let filteredTasks = await Task.find({
+                disabilities: disability, 
+                timePeriod: time,
+                age: age,
             });
-            let filteredByAgeAndTime = [];
-            for(let i = 0; i < filteredTasks.length; i++){
-                let curTask = filteredTasks[i];
-                if (age>=curTask.minAge && age<=curTask.maxAge && curTask.timePeriod==time){
-                    filteredByAgeAndTime.push(curTask);
-                }
-            }
-            return res.status(200).json(filteredByAgeAndTime);
+            return res.status(200).json(filteredTasks);
         }
         else if (disability && age){
-            let filteredTasks = [];
-            allTasks.forEach(task => {
-                let dis = task.disabilities;
-                for (let i = 0; i < dis.length; i++){
-                    if (dis[i] === disability){
-                        filteredTasks.push(task);
-                    }
-                }
+            let filteredTasks = await Task.find({
+                disabilities: disability, 
+                age: age,
             });
-            let filteredByAge = [];
-            for(let i = 0; i < filteredTasks.length; i++){
-                let curTask = filteredTasks[i];
-                if (age>=curTask.minAge && age<=curTask.maxAge){
-                    filteredByAge.push(curTask);
-                }
-            }
-            return res.status(200).json(filteredByAge);
+            return res.status(200).json(filteredTasks);
         }
         else if (disability && time){
-            let filteredTasks = [];
-            allTasks.forEach(task => {
-                let dis = task.disabilities;
-                for (let i = 0; i < dis.length; i++){
-                    if (dis[i] === disability){
-                        filteredTasks.push(task);
-                    }
-                }
+            let filteredTasks = await Task.find({
+                disabilities: disability, 
+                timePeriod: time,
             });
-            let filteredByTime = [];
-            for(let i = 0; i < filteredTasks.length; i++){
-                let curTask = filteredTasks[i];
-                if (curTask.timePeriod==time){
-                    filteredByTime.push(curTask);
-                }
-            }
-            return res.status(200).json(filteredByTime);
+            return res.status(200).json(filteredTasks);
         }
         else if (age && time){
-            let filteredByAgeAndTime = [];
-            for(let i = 0; i < allTasks.length; i++){
-                let curTask = allTasks[i];
-                if (age>=curTask.minAge && age<=curTask.maxAge && curTask.timePeriod==time){
-                    filteredByAgeAndTime.push(curTask);
-                }
-            }
-            return res.status(200).json(filteredByAgeAndTime);
+            let filteredTasks = await Task.find({
+                timePeriod: time,
+                age: age,
+            });
+            return res.status(200).json(filteredTasks);
         }
         else if (disability){
-            let disabilityTasks = [];
-            allTasks.forEach(task => {
-                let dis = task.disabilities;
-                for (let i = 0; i < dis.length; i++){
-                    if (dis[i] === disability){
-                        disabilityTasks.push(task);
-                    }
-                }
+            let filteredTasks = await Task.find({
+                disabilities: disability
             });
-            return res.status(200).json(disabilityTasks);
+            return res.status(200).json(filteredTasks);
         }
         else if (age){
-            let filteredByAge = [];
-            for(let i = 0; i < allTasks.length; i++){
-                let curTask = allTasks[i];
-                if (age>=curTask.minAge && age<=curTask.maxAge){
-                    filteredByAge.push(curTask);
-                }
-            }
-            return res.status(200).json(filteredByAge);
+            let filteredTasks = await Task.find({
+                age: age
+            });
+            return res.status(200).json(filteredTasks);
         }
         else if (time){
-            let filteredByTime = [];
-            for(let i = 0; i < allTasks.length; i++){
-                let curTask = allTasks[i];
-                if (curTask.timePeriod == time){
-                    filteredByTime.push(curTask);
-                }
-            }
-            return res.status(200).json(filteredByTime);
+            let filteredTasks = await Task.find({
+                timePeriod: time
+            });
+            return res.status(200).json(filteredTasks);
         }
     }
     catch(err){
@@ -153,23 +99,14 @@ const getTaskByAttributes = async (req, res) => {
 
 
 
-
-
 //get task by disability
 const getTaskByDisability = async (req, res) => {
     try{
         const disability = req.query.disability;
-        const allTasks = await Task.find();
-        let disabilityTasks = [];
-        allTasks.forEach(task => {
-            let dis = task.disabilities;
-            for (let i = 0; i < dis.length; i++){
-                if (dis[i] === disability){
-                    disabilityTasks.push(task);
-                }
-            }
+        const filteredTasks = await Task.find({
+            disabilities: disability
         });
-        return res.status(200).json(disabilityTasks);
+        return res.status(200).json(filteredTasks);
     }
     catch(err){
         console.log(err.message);
@@ -180,22 +117,16 @@ const getTaskByDisability = async (req, res) => {
 //get task by age:
 const getTaskByAge = async (req, res) => {
     try{
-        const age = req.query.age;
-        const allTasks = await Task.find();
-        let ageTasks = [];
-        allTasks.forEach(task => {
-            let minAge = task.minAge;
-            let maxAge = task.maxAge;
-            if (age >= minAge && age <= maxAge){
-                ageTasks.push(task);
-            }
-        });
+        const ageFilter = req.query.age;
+        console.log(ageFilter);
+        let ageTasks = await Task.find({age: ageFilter});
         return res.status(200).json(ageTasks);
     }
     catch(err){
         console.log(err.message);
         return res.status(500).send({message: err.message});
     }
+
 }
 
 //get task by time:
@@ -217,7 +148,6 @@ const getTaskByTime = async (req, res) => {
 //create a new task:
 const createTask = async (req, res) => {
     try{
-        const {title, details, disabilities, timePeriod, age} = req.body;
         const newTask = await Task.create(req.body);
         await newTask.save();
         return res.status(200).json(newTask); 

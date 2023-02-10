@@ -17,11 +17,9 @@ const taskSchema= mongoose.Schema({
         type: String,
         default: "none",
     },
-    minAge: {
-        type: Number,
-    },
-    maxAge: {
-        type: Number,
+    age: {
+        type: [String],
+        default: []
     }
 }, {
     timestamps: true,
