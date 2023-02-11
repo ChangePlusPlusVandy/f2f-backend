@@ -29,9 +29,11 @@ app.get("/", (req, res) => { // Default route: Unprotected
 const usersRouter = require('./routes/users');
 const childrenRouter =  require('./routes/children');
 const tasksRouter = require('./routes/tasks');
+const postsRouter = require('./routes/posts');
 app.use('/users', usersRouter);
 app.use('/children', childrenRouter);
 app.use('/tasks', tasksRouter);
+app.use('/posts', postsRouter);
 
 
 app.listen(PORT, () => {
