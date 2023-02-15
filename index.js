@@ -25,3 +25,5 @@ app.get("/", (req, res) => { // Default route: Unprotected
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+//allan
