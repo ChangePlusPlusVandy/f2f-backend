@@ -8,13 +8,12 @@ const commentSchema= mongoose.Schema({
     postId: {
         type: ObjectId
     },
+    body: {
+        type: String
+    },
     upVotes: {
         type: Number
     },
-    replies: {
-        type: [ObjectId],
-        default:[]
-    }
 }, {
     timestamps: true,
 });

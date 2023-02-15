@@ -4,12 +4,12 @@ const {getAllUsers, getUserById, addUser, addChild, deleteChild, deleteUser, upd
 
 
 router.get('/',  getAllUsers);
-router.get('/byId', getUserById);
+router.get('/:id', getUserById);
 router.post('/', addUser);
-router.put('/addChild', addChild);
-router.put('/', updateUser);
-router.delete('/', deleteUser);
-router.delete('/deleteChild', deleteChild);
+router.put('/:id/addChild', addChild);
+router.put('/:id', updateUser);
+router.delete('/:id', deleteUser);
+router.delete('/:id/deleteChild', deleteChild);
 
 
 

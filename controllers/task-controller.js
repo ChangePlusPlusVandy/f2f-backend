@@ -17,10 +17,9 @@ const getAllTasks = async (req, res) => {
 //get task by taskId:
 const getTaskById = async (req, res) => {
     try{
-        console.log(req.query.taskId);
-        const taskId = req.query.taskId;
+        const taskId = req.params.id;
         if (taskId){
-            const task = await Task.findById(req.query.taskId);
+            const task = await Task.findById(taskId);
             return res.status(200).json(task);
         }
         else{
@@ -33,10 +32,6 @@ const getTaskById = async (req, res) => {
     }
 }
 
-function mongoQueryHelper(prop,value){
-    return value != null ? {prop: value} : null;
-}
- 
 
 const getTaskByAttributes = async (req, res) => {
     try {
@@ -161,7 +156,7 @@ const createTask = async (req, res) => {
 //update a task:
 const updateTask = async (req, res) => {
     try{
-        const taskId = req.body.taskId;
+        const taskId = req.params.id;
         if (taskId){
             const task = await Task.updateOne({taskId}, req.body)
             return res.status(200).json(task);
@@ -179,7 +174,7 @@ const updateTask = async (req, res) => {
 //delete a task:
 const deleteTask = async (req, res) => {
     try{
-        const {taskId} = req.query;
+        const taskId = req.params.id;
         if (taskId){
             const task = await Task.deleteOne({_id: taskId})
             .then(() => res.status(200).json({message: "Task deleted successfully"}))

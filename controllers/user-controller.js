@@ -17,8 +17,7 @@ const getAllUsers = async (req, res) => {
 //gets user by their userId:
 const getUserById = async (req, res) => {
     try{
-        console.log(req.query.userId);
-        const userId = req.query.userId;
+        const userId = req.params.id;
         if (userId){
             const user = await User.findById(userId);
             return res.status(200).json(user);
@@ -36,7 +35,6 @@ const getUserById = async (req, res) => {
 //add a new user:
 const addUser = async (req, res) => {
     try{
-        const {email, password, firstName, lastName, schoolDistrict, zipCode, phoneNumber, children} = req.body;
         const newUser = await User.create(req.body);
         await newUser.save();
         return res.status(200).json(newUser);
@@ -47,28 +45,25 @@ const addUser = async (req, res) => {
     }
 }
 
+
 //adds child to child array
 const addChild = async (req, res) => {
     try{
-        const userId = req.body.userId;
+        const userId = req.params.id;
         const childId = req.body.childId;
         if (userId && childId){
-            const user = await User.find({_id: userId});
+            const user = await User.findById(userId);
+            console.log(user);
             const child = await Child.findById(childId);
+            console.log(child);
             if (user && child){
-                let newChildren = [];
-                newChildren = user[0].children;
-                newChildren.push(ObjectId(childId));
-                const updatedUser = await User.updateOne(
-                    {_id: userId},
-                    {$set: {
-                        children: newChildren
-                    }}
-                );
+                const updatedUser = await user.updateOne({
+                    $push: {children: childId}
+                });
                 return res.status(200).json(updatedUser);
             }
             else{
-                return res.status(400).json({message: "Could not find user"});
+                return res.status(400).json({message: "Could not find user or child"});
             }
         }
         else{
@@ -84,24 +79,19 @@ const addChild = async (req, res) => {
 //deletes child from child array
 const deleteChild = async (req, res) => {
     try{
-        const userId = req.body.userId;
+        const userId = req.params.id;
         const childId = req.body.childId;
         if (userId && childId){
             const user = await User.findById(userId);
-            const child = await Child.findById(ObjectId(childId));
+            const child = await Child.findById((childId));
             if (user && child){
-                let newChildren = [];
-                newChildren = user.children;
-                //console.log(newChildren);
-                newChildren = newChildren.filter(c=> !(c.equals(ObjectId(child._id))));
-                //console.log(newChildren);
-                const updatedUser = await User.updateOne(
-                    {_id: userId},
-                    {$set: {
-                        children: newChildren
-                    }}
-                );
-                return res.status(200).json(updatedUser);
+                const updatedUser = await user.updateOne({
+                    $pull: {children: childId}
+                });
+                const deletedChild = await Child.deleteOne({_id: childId});
+                console.log(deletedChild);
+
+                return res.status(200).send(updatedUser);
             }
             else{
                 return res.status(400).json({message: "Could not find user or child"});
@@ -121,8 +111,7 @@ const deleteChild = async (req, res) => {
 //delete a user:
 const deleteUser = async (req, res) => {
     try{
-        console.log(req.query.userId);
-        const userId = req.query.userId;
+        const userId = req.params.id;
         if (userId){
             console.log("here");
             const user = await User.deleteOne({_id: userId})
@@ -142,9 +131,9 @@ const deleteUser = async (req, res) => {
 //update a user:
 const updateUser = async (req, res) => {
     try{
-        const {userId} = req.body;
+        const userId = req.params.id;
         if (userId){
-            const user = await User.updateOne({userId}, req.body)
+            const user = await User.updateOne({_id: userId}, req.body)
             return res.status(200).json(user);
         }
         else{

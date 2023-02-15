@@ -3,14 +3,14 @@ const router = express.Router();
 const {getAllTasks, getTaskById, getTaskByAttributes, getTaskByAge, getTaskByDisability, getTaskByTime, createTask, updateTask, deleteTask} = require("../controllers/task-controller.js");
 
 router.get('/',  getAllTasks);
-router.get('/byId', getTaskById);
+router.get('/:id', getTaskById);
 router.get('/byAttributes', getTaskByAttributes);
 router.get('/byDisability', getTaskByDisability);
 router.get('/byAge', getTaskByAge);
 router.get('/byTime', getTaskByTime)
 router.post('/', createTask);
-router.put('/', updateTask);
-router.delete('/', deleteTask);
+router.put('/:id', updateTask);
+router.delete('/:id', deleteTask);
 
 
 
