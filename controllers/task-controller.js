@@ -37,12 +37,12 @@ const getTaskByAttributes = async (req, res) => {
     try {
         const disability = req.query.disability;
         const age = req.query.age;
-        const time = req.query.time;
-        if (disability && age && time){
+        const priority = req.query.priority;
+        if (disability && age && priority){
             let filteredTasks = await Task.find({
                 disabilities: disability, 
-                timePeriod: time,
                 age: age,
+                priority: priority,
             });
             return res.status(200).json(filteredTasks);
         }
@@ -53,16 +53,16 @@ const getTaskByAttributes = async (req, res) => {
             });
             return res.status(200).json(filteredTasks);
         }
-        else if (disability && time){
+        else if (disability && priority){
             let filteredTasks = await Task.find({
                 disabilities: disability, 
-                timePeriod: time,
+                priority: priority,
             });
             return res.status(200).json(filteredTasks);
         }
-        else if (age && time){
+        else if (age && priority){
             let filteredTasks = await Task.find({
-                timePeriod: time,
+                priority: priority,
                 age: age,
             });
             return res.status(200).json(filteredTasks);
@@ -79,9 +79,9 @@ const getTaskByAttributes = async (req, res) => {
             });
             return res.status(200).json(filteredTasks);
         }
-        else if (time){
+        else if (priority){
             let filteredTasks = await Task.find({
-                timePeriod: time
+                priority: priority
             });
             return res.status(200).json(filteredTasks);
         }
@@ -136,6 +136,21 @@ const getTaskByTime = async (req, res) => {
         return res.status(500).send({message: err.message});
     }
 }
+
+//get task by priority:
+const getTaskByPriority = async (req, res) => {
+    try{
+        const priority = req.body.priority;
+        console.log(priority);
+        const allTasks = await Task.find({priority: priority});
+        return res.status(200).json(allTasks);
+    }
+    catch(err){
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
+    }
+}
+
 
 
 
@@ -192,4 +207,4 @@ const deleteTask = async (req, res) => {
 
 
 
-module.exports = {getAllTasks, getTaskById, getTaskByAttributes, getTaskByDisability, getTaskByAge, getTaskByTime, createTask, updateTask, deleteTask};
+module.exports = {getAllTasks, getTaskById, getTaskByAttributes, getTaskByDisability, getTaskByAge, getTaskByTime, getTaskByPriority, createTask, updateTask, deleteTask};

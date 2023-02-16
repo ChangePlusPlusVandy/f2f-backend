@@ -20,6 +20,9 @@ const taskSchema= mongoose.Schema({
     age: {
         type: [String],
         default: []
+    },
+    priority:{
+        type: Number
     }
 }, {
     timestamps: true,
