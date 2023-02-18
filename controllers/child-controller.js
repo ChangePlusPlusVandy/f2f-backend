@@ -18,7 +18,7 @@ const getChildren = async (req, res) => {
 //gets child by their childId:
 const getChildById = async (req, res) => {
     try{
-        const childId = req.query.childId;
+        const childId = req.params.id;
         if (childId){
             const child = await Child.findById(childId);
             return res.status(200).json(child);
@@ -50,8 +50,7 @@ const addChild = async (req, res) => {
 //delete a child:
 const deleteChild = async (req, res) => {
     try{
-        console.log(req.query.childId);
-        const childId = req.query.childId;
+        const childId = req.params.id;
         if (childId){
             const child = await Child.deleteOne({_id: childId})
             .then(() => res.status(200).json({message: "Child deleted successfully"}))
@@ -70,9 +69,13 @@ const deleteChild = async (req, res) => {
 //update a Child:
 const updateChild = async (req, res) => {
     try{
-        const childId = req.body.childId;
+        const childId = req.params.id;
         if (childId){
-            const child= await Child.updateOne({childId}, req.body)
+            console.log(childId);
+            const chil = await Child.findById(childId);
+            console.log(chil);
+            const child= await Child.updateOne({_id: childId}, req.body)
+            console.log(child);
             return res.status(200).json(child);
         }
         else{
@@ -88,20 +91,14 @@ const updateChild = async (req, res) => {
 //add completed Task:
 const addCompletedTask = async (req, res) => {
     try{
-        const {childId} = req.body;
-        const {taskId} = req.body;
+        const childId = req.params.id;
+        const taskId = req.body.taskId;
         if (childId && taskId){
             const task = await Task.findById(taskId);
             const child= await Child.findById(childId);
-            let updatedCompletedTaks = [];
-            updatedCompletedTasks = child.completedTasks;
-            updatedCompletedTasks.push(ObjectId(taskId));
-            const updatedChild = await Child.updateOne(
-                {_id: childId},
-                {$set: {
-                    completedTasks: updatedCompletedTasks
-                }}
-            );
+            const updatedChild = await child.updateOne({
+                $push: {completedTasks: task}
+            });
             return res.status(200).json(updatedChild);
         }
         else{
@@ -118,31 +115,17 @@ const addCompletedTask = async (req, res) => {
 //deletes child from child array
 const deleteCompletedTask = async (req, res) => {
     try{
-        const childId = req.body.childId;
+        const childId = req.params.id;
         const taskId = req.body.taskId;
         if (taskId && childId){
             const child = await Child.findById(childId);
-            const task = await Task.findById(ObjectId(taskId));
-            if (child && task){
-                let newTasks = [];
-                newTasks = child.completedTasks;
-                //console.log(newChildren);
-                newTasks = newTasks.filter(t=> !(t.equals(ObjectId(taskId))));
-                //console.log(newChildren);
-                const updatedChild = await Child.updateOne(
-                    {_id: childId},
-                    {$set: {
-                        completedTasks: newTasks
-                    }}
-                );
-                return res.status(200).json(updatedChild);
-            }
-            else{
-                return res.status(400).json({message: "Could not find child or task"});
-            }
+            const updatedChild = await child.updateOne({
+                $pull: {completedTasks: taskId}
+            });
+            return res.status(200).json(updatedChild);
         }
         else{
-            return res.status(400).json({message: "Missing childId or taskId"});
+            return res.status(400).json({message: "Could not find child or task"});
         }
     }
     catch(err){

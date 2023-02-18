@@ -17,10 +17,9 @@ const getAllTasks = async (req, res) => {
 //get task by taskId:
 const getTaskById = async (req, res) => {
     try{
-        console.log(req.query.taskId);
-        const taskId = req.query.taskId;
+        const taskId = req.params.id;
         if (taskId){
-            const task = await Task.findById(req.query.taskId);
+            const task = await Task.findById(taskId);
             return res.status(200).json(task);
         }
         else{
@@ -33,48 +32,44 @@ const getTaskById = async (req, res) => {
     }
 }
 
-function mongoQueryHelper(prop,value){
-    return value != null ? {prop: value} : null;
-}
- 
 
 const getTaskByAttributes = async (req, res) => {
-    try {
-        const disability = req.query.disability;
+    try{
+        const disabilities = req.body.disabilities;
         const age = req.query.age;
-        const time = req.query.time;
-        if (disability && age && time){
+        const priority = req.query.priority;
+        if (disabilities && age && priority){
             let filteredTasks = await Task.find({
-                disabilities: disability, 
-                timePeriod: time,
+                disabilities: {$in: disabilities},
                 age: age,
+                priority: priority,
             });
             return res.status(200).json(filteredTasks);
         }
-        else if (disability && age){
+        else if (disabilities && age){
             let filteredTasks = await Task.find({
-                disabilities: disability, 
-                age: age,
+                disabilities: {$in: disabilities}, 
+                age: age
             });
             return res.status(200).json(filteredTasks);
         }
-        else if (disability && time){
+        else if (disabilities && priority){
             let filteredTasks = await Task.find({
-                disabilities: disability, 
-                timePeriod: time,
+                disabilities: {$in: disabilities},
+                priority: priority,
             });
             return res.status(200).json(filteredTasks);
         }
-        else if (age && time){
+        else if (age && priority){
             let filteredTasks = await Task.find({
-                timePeriod: time,
-                age: age,
+                priority: priority,
+                age: age
             });
             return res.status(200).json(filteredTasks);
         }
-        else if (disability){
+        else if (disabilities){
             let filteredTasks = await Task.find({
-                disabilities: disability
+                disabilities:{$in: disabilities}
             });
             return res.status(200).json(filteredTasks);
         }
@@ -84,9 +79,9 @@ const getTaskByAttributes = async (req, res) => {
             });
             return res.status(200).json(filteredTasks);
         }
-        else if (time){
+        else if (priority){
             let filteredTasks = await Task.find({
-                timePeriod: time
+                priority: priority
             });
             return res.status(200).json(filteredTasks);
         }
@@ -102,9 +97,9 @@ const getTaskByAttributes = async (req, res) => {
 //get task by disability
 const getTaskByDisability = async (req, res) => {
     try{
-        const disability = req.query.disability;
+        const disabilities = req.body.disabilities;
         const filteredTasks = await Task.find({
-            disabilities: disability
+            disabilities: {$in: disabilities}
         });
         return res.status(200).json(filteredTasks);
     }
@@ -117,9 +112,10 @@ const getTaskByDisability = async (req, res) => {
 //get task by age:
 const getTaskByAge = async (req, res) => {
     try{
-        const ageFilter = req.query.age;
-        console.log(ageFilter);
-        let ageTasks = await Task.find({age: ageFilter});
+        const age = req.query.age;
+        let ageTasks = await Task.find({
+            age: age
+        });
         return res.status(200).json(ageTasks);
     }
     catch(err){
@@ -142,6 +138,21 @@ const getTaskByTime = async (req, res) => {
     }
 }
 
+//get task by priority:
+const getTaskByPriority = async (req, res) => {
+    try{
+        const priority = req.body.priority;
+        console.log(priority);
+        const allTasks = await Task.find({priority: priority});
+        return res.status(200).json(allTasks);
+    }
+    catch(err){
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
+    }
+}
+
+
 
 
 
@@ -161,7 +172,7 @@ const createTask = async (req, res) => {
 //update a task:
 const updateTask = async (req, res) => {
     try{
-        const taskId = req.body.taskId;
+        const taskId = req.params.id;
         if (taskId){
             const task = await Task.updateOne({taskId}, req.body)
             return res.status(200).json(task);
@@ -179,7 +190,7 @@ const updateTask = async (req, res) => {
 //delete a task:
 const deleteTask = async (req, res) => {
     try{
-        const {taskId} = req.query;
+        const taskId = req.params.id;
         if (taskId){
             const task = await Task.deleteOne({_id: taskId})
             .then(() => res.status(200).json({message: "Task deleted successfully"}))
@@ -197,4 +208,4 @@ const deleteTask = async (req, res) => {
 
 
 
-module.exports = {getAllTasks, getTaskById, getTaskByAttributes, getTaskByDisability, getTaskByAge, getTaskByTime, createTask, updateTask, deleteTask};
+module.exports = {getAllTasks, getTaskById, getTaskByAttributes, getTaskByDisability, getTaskByAge, getTaskByTime, getTaskByPriority, createTask, updateTask, deleteTask};
