@@ -1,9 +1,10 @@
 const express = require("express");
 const dotenv = require("dotenv");
-dotenv.config();
 const cors = require("cors");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const VerifyToken = require("./middlewares/VerifyToken");
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -13,7 +14,7 @@ app.use(express.json()); // Parses incoming JSON requests and uts the parsed dat
 app.use(express.urlencoded({ extended: true })); // Parses incoming requests with urlenconded payloads
 
 mongoose.connect(process.env.MONGO_URI, () => {
-  console.log("connected to DB!√");
+    console.log("connected to DB!√")
 });
 /**
  * Uses the VerifyToken middleware to protect the data route
@@ -21,20 +22,18 @@ mongoose.connect(process.env.MONGO_URI, () => {
  */
 app.use("/data", VerifyToken, require("./routes/users"));
 
-app.get("/", (req, res) => {
-  // Default route: Unprotected
-  res.send("Express Auth Temp!!");
+app.get("/", (req, res) => { // Default route: Unprotected
+    res.send("Express Auth Temp!!");
 });
 
-const usersRouter = require("./routes/users");
-const childrenRouter = require("./routes/children");
-const tasksRouter = require("./routes/tasks");
-const sTasksRouter = require("./routes/sTasks");
-app.use("/users", usersRouter);
-app.use("/children", childrenRouter);
-app.use("/tasks", tasksRouter);
-app.use("/sTasks", sTasksRouter);
+const usersRouter = require('./routes/users');
+const childrenRouter =  require('./routes/children');
+const tasksRouter = require('./routes/tasks');
+app.use('/users', usersRouter);
+app.use('/children', childrenRouter);
+app.use('/tasks', tasksRouter);
+
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
