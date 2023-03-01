@@ -35,7 +35,7 @@ const getTaskById = async (req, res) => {
 
 const getTaskByAttributes = async (req, res) => {
     try{
-        const disabilities = req.body.disabilities;
+        const disabilities = JSON.parse(req.query.disabilities);
         const age = req.query.age;
         const priority = req.query.priority;
         if (disabilities && age && priority){
@@ -97,7 +97,9 @@ const getTaskByAttributes = async (req, res) => {
 //get task by disability
 const getTaskByDisability = async (req, res) => {
     try{
-        const disabilities = req.body.disabilities;
+        const disabilities = JSON.parse(req.query.disabilities);
+        console.log(disabilities);
+        console.log(disabilities.length);
         const filteredTasks = await Task.find({
             disabilities: {$in: disabilities}
         });
