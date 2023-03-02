@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/users", (req, res) => {
-  checkEmailSF(conn, req.body.email).then((result) => {
+    checkEmailSF(conn, req.body.email).then((result) => {
     console.log(result);
     res.send({
       isEmail: result,
@@ -59,7 +59,7 @@ async function checkEmailSF(conn, email) {
       result.records.forEach((account) => {
         if (account.Email === email) {
           console.log(account.Email);
-          isEmail = true;
+          isEmail = 'SUCCESS';
         }
       });
     }

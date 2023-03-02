@@ -18,12 +18,12 @@ const getUserByEmail = async (req, res) => {
     try {
         const users = await User.find({email: req.query.email});
         if (users.length > 0){
-            return res.status(200).send("Found");
+            return res.status(200).json({status: "Found"});
         }
         else{
-            return res.status(200).send("Not Found");
+            return res.status(200).json({status: "Not Found"});
         }
-       //return res.status(200).json(users);
+    //    return res.status(200).json(users);
     } 
     catch(err){
         console.log(err.message);
