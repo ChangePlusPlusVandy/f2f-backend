@@ -197,6 +197,26 @@ const loadTaskCSV = async (req, res) => {
     });
 };
 
+/**
+ * Return a user's stats of the tasks, including all tasks and
+ * high priority tasks
+ * @param {Object} req
+ * @param {Object} res
+ */
+const getStats = async (req, res) => {
+  // get user info from cache
+  // const user = req.user;
+  try {
+    const numAll = await Task.countDocuments({});
+    // TODO: Use upcoming or Priority? And fix priority level
+    const numUpcoming = await Task.countDocuments({ priority: { $gt: 2 } });
+    return res.status(200).json({ numAll, numUpcoming });
+  } catch (err) {
+    console.error("Error counting documents:", err);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
 module.exports = {
   getAllTasks,
   getTaskById,
@@ -209,4 +229,5 @@ module.exports = {
   updateTask,
   deleteTask,
   loadTaskCSV,
+  getStats,
 };

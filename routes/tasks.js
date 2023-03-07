@@ -12,8 +12,11 @@ const {
   updateTask,
   deleteTask,
   loadTaskCSV,
+  getStats,
 } = require("../controllers/task-controller.js");
 
+router.post("/loadTaskCSV", loadTaskCSV);
+router.get("/getStats", getStats);
 router.get("/", getAllTasks);
 router.get("/byPriority", getTaskByPriority);
 router.get("/byAge", getTaskByAge);
@@ -24,6 +27,5 @@ router.get("/byTime", getTaskByTime);
 router.post("/", createTask);
 router.put("/:id", updateTask);
 router.delete("/:id", deleteTask);
-router.post("/loadTaskCSV", loadTaskCSV);
 
 module.exports = router;
