@@ -217,6 +217,25 @@ const getStats = async (req, res) => {
   }
 };
 
+/**
+ * Return a user's stats of the tasks, including all tasks and
+ * high priority tasks
+ * @param {Object} req
+ * @param {Object} res
+ */
+const getPriorityTasks = async (req, res) => {
+  // get user info from cache
+  // const user = req.user;
+
+  try {
+    const tasks = await Task.find({ priority: { $gt: 2 } });
+    return res.status(200).json(tasks);
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).send({ message: err.message });
+  }
+};
+
 module.exports = {
   getAllTasks,
   getTaskById,
@@ -230,4 +249,5 @@ module.exports = {
   deleteTask,
   loadTaskCSV,
   getStats,
+  getPriorityTasks,
 };
