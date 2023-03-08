@@ -1,6 +1,7 @@
 require("dotenv").config({ path: "../.env" });
 const { sendVerificationEmail } = require("../verification/nodemailer.js");
 const { checkEmailSF } = require("../verification/salesforce.js");
+const User = require('../models/user.model.js');
 
 var jsforce = require("jsforce");
 const { URL, USERNAME, PASSWORD, TOKEN } = process.env;
