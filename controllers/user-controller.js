@@ -23,7 +23,6 @@ const getUserByEmail = async (req, res) => {
         else{
             return res.status(200).send("Not Found");
         }
-       //return res.status(200).json(users);
     } 
     catch(err){
         console.log(err.message);
