@@ -14,23 +14,6 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-const getUserByEmail = async (req, res) => {
-    try {
-        const users = await User.find({email: req.query.email});
-        if (users.length > 0){
-            return res.status(200).json({status: "Found"});
-        }
-        else{
-            return res.status(200).json({status: "Not Found"});
-        }
-    //    return res.status(200).json(users);
-    } 
-    catch(err){
-        console.log(err.message);
-        return res.status(500).send({message: err.message});
-    }
-}
-
 //gets user by their userId:
 const getUserById = async (req, res) => {
     try{
@@ -166,4 +149,4 @@ const updateUser = async (req, res) => {
 
 
 
-module.exports = {getAllUsers, getUserByEmail, getUserById, addUser, addChild, deleteChild, deleteUser, updateUser};
+module.exports = {getAllUsers, getUserById, addUser, addChild, deleteChild, deleteUser, updateUser};
