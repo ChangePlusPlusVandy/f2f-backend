@@ -27,52 +27,33 @@ const getTaskById = async (req, res) => {
   }
 };
 
+/**
+ * Selectively return tasks that matching the requirements:
+ * disabilities, age, and priority
+ * @param {Object} req
+ * @param {Object} res
+ * @returns
+ */
 const getTaskByAttributes = async (req, res) => {
   try {
-    const disabilities = req.body.disabilities;
-    const age = req.query.age;
-    const priority = req.query.priority;
-    if (disabilities && age && priority) {
-      let filteredTasks = await Task.find({
-        disabilities: { $in: disabilities },
-        age: age,
-        priority: priority,
-      });
-      return res.status(200).json(filteredTasks);
-    } else if (disabilities && age) {
-      let filteredTasks = await Task.find({
-        disabilities: { $in: disabilities },
-        age: age,
-      });
-      return res.status(200).json(filteredTasks);
-    } else if (disabilities && priority) {
-      let filteredTasks = await Task.find({
-        disabilities: { $in: disabilities },
-        priority: priority,
-      });
-      return res.status(200).json(filteredTasks);
-    } else if (age && priority) {
-      let filteredTasks = await Task.find({
-        priority: priority,
-        age: age,
-      });
-      return res.status(200).json(filteredTasks);
-    } else if (disabilities) {
-      let filteredTasks = await Task.find({
-        disabilities: { $in: disabilities },
-      });
-      return res.status(200).json(filteredTasks);
-    } else if (age) {
-      let filteredTasks = await Task.find({
-        age: age,
-      });
-      return res.status(200).json(filteredTasks);
-    } else if (priority) {
-      let filteredTasks = await Task.find({
-        priority: priority,
-      });
-      return res.status(200).json(filteredTasks);
+    const disabilities = req.query.disabilities
+      ? JSON.parse(req.query.disabilities)
+      : null;
+    const age = req.query.age ? JSON.parse(req.query.age) : null;
+    const priority = req.query.priority ? JSON.parse(req.query.priority) : null;
+
+    const query = {};
+    if (disabilities) {
+      query.disabilities = { $in: disabilities };
     }
+    if (age) {
+      query.age = age;
+    }
+    if (priority) {
+      query.priority = { $gt: priority };
+    }
+    const tasks = await Task.find(query);
+    return res.status(200).json(tasks);
   } catch (err) {
     console.log(err.message);
     return res.status(500).send({ message: err.message });
@@ -82,7 +63,7 @@ const getTaskByAttributes = async (req, res) => {
 //get task by disability
 const getTaskByDisability = async (req, res) => {
   try {
-    const disabilities = req.body.disabilities;
+    const disabilities = JSON.parse(req.query.disabilities);
     const filteredTasks = await Task.find({
       disabilities: { $in: disabilities },
     });
@@ -202,36 +183,36 @@ const loadTaskCSV = async (req, res) => {
  * high priority tasks
  * @param {Object} req
  * @param {Object} res
+ * return the number of all tasks the user needs to complete and
+ * the number of high priority tasks the user needs to complete
  */
 const getStats = async (req, res) => {
-  // get user info from cache
-  // const user = req.user;
   try {
-    const numAll = await Task.countDocuments({});
-    // TODO: Use upcoming or Priority? And fix priority level
-    const numUpcoming = await Task.countDocuments({ priority: { $gt: 2 } });
+    const disabilities = req.query.disabilities
+      ? JSON.parse(req.query.disabilities)
+      : null;
+    const age = req.query.age ? JSON.parse(req.query.age) : null;
+    const priority = req.query.priority ? JSON.parse(req.query.priority) : null;
+
+    const allQuery = {};
+    const priorityQuery = {};
+    if (disabilities) {
+      allQuery.disabilities = { $in: disabilities };
+      priorityQuery.disabilities = { $in: disabilities };
+    }
+    if (age) {
+      allQuery.age = age;
+      priorityQuery.age = age;
+    }
+    if (priority) {
+      priorityQuery.priority = { $gt: priority };
+    }
+
+    const numAll = await Task.countDocuments(allQuery);
+    const numUpcoming = await Task.countDocuments(priorityQuery);
     return res.status(200).json({ numAll, numUpcoming });
   } catch (err) {
     console.error("Error counting documents:", err);
-    return res.status(500).send({ message: err.message });
-  }
-};
-
-/**
- * Return a user's stats of the tasks, including all tasks and
- * high priority tasks
- * @param {Object} req
- * @param {Object} res
- */
-const getPriorityTasks = async (req, res) => {
-  // get user info from cache
-  // const user = req.user;
-
-  try {
-    const tasks = await Task.find({ priority: { $gt: 2 } });
-    return res.status(200).json(tasks);
-  } catch (err) {
-    console.log(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
@@ -249,5 +230,4 @@ module.exports = {
   deleteTask,
   loadTaskCSV,
   getStats,
-  getPriorityTasks,
 };

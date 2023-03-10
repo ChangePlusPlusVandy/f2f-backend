@@ -89,15 +89,14 @@ const getPostById = async (req, res) => {
 
 const getPostByDisabilities = async (req, res) => {
     try{
-        const disabilities = req.body.disabilities;
-        console.log(disabilities);
+        const disabilities = JSON.parse(req.query.disabilities);
         if (disabilities.length === 0){
             const allPosts = await Post.find({});
             return res.status(200).json(allPosts);
         }
         else{
             const posts = await Post.find({
-                disabilityTags: {$all: disabilities}
+                disabilityTags: {$in: disabilities}
             });
             return res.status(200).json(posts);
         }

@@ -13,10 +13,8 @@ const {
   deleteTask,
   loadTaskCSV,
   getStats,
-  getPriorityTasks,
 } = require("../controllers/task-controller.js");
 
-router.get("/getPriorityTasks", getPriorityTasks);
 router.post("/loadTaskCSV", loadTaskCSV);
 router.get("/getStats", getStats);
 router.get("/", getAllTasks);

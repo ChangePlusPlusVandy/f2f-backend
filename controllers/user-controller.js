@@ -17,7 +17,12 @@ const getAllUsers = async (req, res) => {
 const getUserByEmail = async (req, res) => {
     try {
         const users = await User.find({email: req.query.email});
-        return res.status(200).json(users);
+        if (users.length > 0){
+            return res.status(200).send("Found");
+        }
+        else{
+            return res.status(200).send("Not Found");
+        }
     } 
     catch(err){
         console.log(err.message);
