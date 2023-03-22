@@ -1,7 +1,39 @@
 require("dotenv").config({ path: "../.env" });
 const { sendVerificationEmail } = require("../verification/nodemailer.js");
 const { checkEmailSF } = require("../verification/salesforce.js");
+const jwt = require('jsonwebtoken');
 const User = require('../models/user.model.js');
+
+//require('crypto').randomBytes(64).toString('hex')
+//https://www.youtube.com/watch?v=mbsmsi7l3r4 
+
+const loginUser = async (req, res) => {
+  try {
+    //autheticate user here
+    const email = req.body.email;
+    const user = {email: email}
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+    res.json({accessToken: accessToken});
+  } 
+  catch(err){
+      console.log(err.message);
+      return res.status(500).send({message: err.message});
+  }
+}
+
+function authenicateToken(req, res, nex){
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null){
+    return res.sendStatus(401)
+  }
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user)=> {
+    if (err) return res.sendStatus(403)
+    req.user = user;
+    next()
+  })
+}
+
 
 var jsforce = require("jsforce");
 const { URL, USERNAME, PASSWORD, TOKEN } = process.env;

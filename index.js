@@ -30,12 +30,10 @@ const usersRouter = require('./routes/users');
 const childrenRouter =  require('./routes/children');
 const tasksRouter = require('./routes/tasks');
 const postsRouter = require('./routes/posts');
-const verificationRouter = require('./routes/verification');
 app.use('/users', usersRouter);
 app.use('/children', childrenRouter);
 app.use('/tasks', tasksRouter);
 app.use('/posts', postsRouter);
-app.use('/verification', verificationRouter);
 
 
 
