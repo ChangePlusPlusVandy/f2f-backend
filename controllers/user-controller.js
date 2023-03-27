@@ -49,13 +49,13 @@ const getUserById = async (req, res) => {
     }
 }
 
-//gets user by their userId:
+//checks if email and password match 
 const loginUser = async (req, res) => {
     try{
         const email = req.body.email;
         const password = req.body.password;
         const user = await User.find({email: email});
-        if (!user){
+        if (user.length === 0){
             return res.status(400).json({message: "Could not find user with specified email"});
         }
         if (user[0].password === password){
