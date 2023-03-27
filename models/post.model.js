@@ -3,7 +3,10 @@ const ObjectId = require('mongodb').ObjectId;
 
 const postSchema= mongoose.Schema({
     userId: {
-        type: ObjectId
+        type: ObjectId,
+        required: true,
+        trim: true,
+        unique: true
     },
     heading: {
         type: String
@@ -12,7 +15,8 @@ const postSchema= mongoose.Schema({
         type: String
     },
     upVotes: {
-        type: Number
+        type: Number,
+        default: 0
     },
     disabilityTags: {
         type: [String], 

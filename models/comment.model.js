@@ -3,16 +3,21 @@ const ObjectId = require('mongodb').ObjectId;
 
 const commentSchema= mongoose.Schema({
     userId: {
-        type: ObjectId
+        type: ObjectId,
+        required: true,
+        unique: true
     },
     postId: {
-        type: ObjectId
+        type: ObjectId,
+        required: true,
+        unique: true
     },
     body: {
         type: String
     },
     upVotes: {
-        type: Number
+        type: Number,
+        default: 0
     },
 }, {
     timestamps: true,
