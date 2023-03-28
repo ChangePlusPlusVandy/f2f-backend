@@ -14,6 +14,23 @@ const getAllUsers = async (req, res) => {
     }
 }
 
+const getUserByEmail = async (req, res) => {
+    try {
+        const users = await User.find({email: req.query.email});
+        if (users.length > 0){
+            return res.status(200).send("Found");
+        }
+        else{
+            return res.status(200).send("Not Found");
+        }
+    } 
+    catch(err){
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
+    }
+}
+
+
 //gets user by their userId:
 const getUserById = async (req, res) => {
     try{
@@ -31,6 +48,31 @@ const getUserById = async (req, res) => {
         return res.status(500).send({message: err.message});
     }
 }
+
+//checks if email and password match 
+const loginUser = async (req, res) => {
+    try{
+        const email = req.body.email;
+        const password = req.body.password;
+        const user = await User.find({email: email});
+        if (user.length === 0){
+            return res.status(400).json({message: "Could not find user with specified email"});
+        }
+        if (user[0].password === password){
+            return res.status(200).json(user[0]._id.toString());
+        }
+        else{
+            return res.status(400).json({message: "Password is incorrect"});
+        }
+    }
+
+    catch(err){
+        console.log(err.message);
+        return res.status(500).send({message: err.message});
+    }
+}
+
+
 
 //add a new user:
 const addUser = async (req, res) => {
@@ -103,7 +145,7 @@ const deleteChild = async (req, res) => {
     }
     catch(err){
         console.log(err.message);
-        return res.status(400).send({message: err.message});
+        return res.status(500).send({message: err.message});
     }
 }
 
@@ -149,4 +191,4 @@ const updateUser = async (req, res) => {
 
 
 
-module.exports = {getAllUsers, getUserById, addUser, addChild, deleteChild, deleteUser, updateUser};
+module.exports = {getAllUsers, getUserById, loginUser, addUser, addChild, deleteChild, deleteUser, updateUser};
