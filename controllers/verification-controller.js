@@ -1,40 +1,39 @@
 require("dotenv").config({ path: "../.env" });
 const { sendVerificationEmail } = require("../verification/nodemailer.js");
 const { checkEmailSF } = require("../verification/salesforce.js");
-const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
-const User = require('../models/user.model.js');
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const User = require("../models/user.model.js");
 
 //require('crypto').randomBytes(64).toString('hex')
-//https://www.youtube.com/watch?v=mbsmsi7l3r4 
-//https://github.com/VUcept-Webapp/VUcept-Management-Backend/blob/main/controllers/authController.js 
+//https://www.youtube.com/watch?v=mbsmsi7l3r4
+//https://github.com/VUcept-Webapp/VUcept-Management-Backend/blob/main/controllers/authController.js
 //https://github.com/VUcept-Webapp/VUcept-Management-Backend/blob/main/lib/constants.js
 //https://github.com/ChangePlusPlusVandy/f2f-backend/blob/allan/controllers/verification-controller.js
 
 /**
- * Generate the access token for login and signup 
+ * Generate the access token for login and signup
  * @param {Object} type - user type
  * @returns the access token string
  */
 const generateAccessToken = (user) => {
-    const newUser = {
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      schoolDistrict: user.schoolDistrict,
-      zipCode: user.zipCode,
-      phoneNumber: user.phoneNumber,
-      children: user.children,
-      posts: user.posts,
-    }
-    return jwt.sign(newUser, process.env.ACCESS_TOKEN_SECRET, 
-      {
-        expiresIn: '30m'
-      });
-}
+  const newUser = {
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    schoolDistrict: user.schoolDistrict,
+    zipCode: user.zipCode,
+    phoneNumber: user.phoneNumber,
+    children: user.children,
+    posts: user.posts,
+  };
+  return jwt.sign(newUser, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "30m",
+  });
+};
 
 /**
- * the refresh token for login and signup; it has an expiration date of three days 
+ * the refresh token for login and signup; it has an expiration date of three days
  * @param {Object} type user type
  * @returns the refresh token string
  */
@@ -48,18 +47,17 @@ const generateRefreshToken = (user) => {
     phoneNumber: user.phoneNumber,
     children: user.children,
     posts: user.posts,
-  }
-  return jwt.sign(newUser, process.env.REFRESH_TOKEN_SECRET, 
-    {
-      expiresIn: '3d'
-    });
-}
+  };
+  return jwt.sign(newUser, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: "3d",
+  });
+};
 
 /**
  * check the user's authentication status
- * @param {string} email 
- * @param {string} password 
- * @returns 
+ * @param {string} email
+ * @param {string} password
+ * @returns
  */
 /*
 const authenticateUser = async (email, password) =>{
@@ -94,23 +92,20 @@ const authenticateUser = async (email, password) =>{
   }
 }*/
 
+// var jsforce = require("jsforce");
+// const { URL, USERNAME, PASSWORD, TOKEN } = process.env;
+// const conn = new jsforce.Connection({
+//   loginUrl: URL,
+// });
 
-
-
-var jsforce = require("jsforce");
-const { URL, USERNAME, PASSWORD, TOKEN } = process.env;
-const conn = new jsforce.Connection({
-  loginUrl: URL,
-});
-
-conn.login(USERNAME, PASSWORD + TOKEN, (err, userInfo) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("User Id: " + userInfo.id);
-    console.log("Ord Id: " + userInfo.organizationId);
-  }
-});
+// conn.login(USERNAME, PASSWORD + TOKEN, (err, userInfo) => {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log("User Id: " + userInfo.id);
+//     console.log("Ord Id: " + userInfo.organizationId);
+//   }
+// });
 
 const sendVerifEmail = async (req, res) => {
   try {
