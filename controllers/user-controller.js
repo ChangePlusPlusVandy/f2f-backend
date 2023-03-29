@@ -187,13 +187,24 @@ const exportDataToCSV = async (req, res) => {
     // Map the user data to CSV format and push it to the stream
     users.forEach(user => {
       const row = {
-        firstName: user.firstName,
+        id: user._id,
         email: user.email,
+        passsword: user.password,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        schoolDistrict: user.schoolDistrict,
+        zipCode: user.zipCode,
+        phoneNumer: user.phoneNumer,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        __v: user.__v,
         // replace with your own fields
       };
       console.log(row);
       csvStream.write(row);
     });
+
+    csvStream.end();
 
     // Set headers for CSV response
     res.setHeader('Content-disposition', 'attachment; filename=users.csv');
