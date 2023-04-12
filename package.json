@@ -14,6 +14,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "fast-csv": "^4.3.6",
     "firebase-admin": "^11.2.0",
     "jsforce": "^1.11.0",
     "jsonwebtoken": "^9.0.0",
@@ -21,6 +22,7 @@
     "mongoose": "^6.10.0",
     "nodemailer": "^6.9.1",
     "nodemon": "^2.0.20",
-    "procfile": "^0.1.1"
+    "procfile": "^0.1.1",
+    "stream": "^0.0.2"
   }
 }

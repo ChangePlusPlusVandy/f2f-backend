@@ -1,6 +1,8 @@
 const User = require("../models/user.model.js");
 const Child = require("../models/child.model.js");
 const ObjectId = require("mongodb").ObjectId;
+const fastCsv = require("fast-csv");
+const { Readable } = require('stream');
 
 //gets all users in database
 const getAllUsers = async (req, res) => {
@@ -175,6 +177,48 @@ const updateUser = async (req, res) => {
   }
 };
 
+const exportDataToCSV = async (req, res) => {
+  try {
+    const users = await User.find(); // retrieve data from MongoDB
+
+    // Create a CSV stream with Fast CSV
+    const csvStream = fastCsv.format({ headers: true });
+
+    // Map the user data to CSV format and push it to the stream
+    users.forEach(user => {
+      const row = {
+        id: user._id,
+        email: user.email,
+        passsword: user.password,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        schoolDistrict: user.schoolDistrict,
+        zipCode: user.zipCode,
+        phoneNumer: user.phoneNumer,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        __v: user.__v,
+        // replace with your own fields
+      };
+      console.log(row);
+      csvStream.write(row);
+    });
+
+    csvStream.end();
+
+    // Set headers for CSV response
+    res.setHeader('Content-disposition', 'attachment; filename=users.csv');
+    res.set('Content-Type', 'text/csv');
+
+    // Pipe CSV stream to response
+    csvStream.pipe(res);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Internal server error');
+  }
+
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -184,4 +228,5 @@ module.exports = {
   deleteChild,
   deleteUser,
   updateUser,
+  exportDataToCSV,
 };

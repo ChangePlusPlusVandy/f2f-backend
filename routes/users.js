@@ -9,8 +9,10 @@ const {
   deleteChild,
   deleteUser,
   updateUser,
+  exportDataToCSV,
 } = require("../controllers/user-controller.js");
 
+router.get("/exportCSV", exportDataToCSV);
 router.get("/", getAllUsers);
 router.post("/login", loginUser);
 router.get("/:id", getUserById);
