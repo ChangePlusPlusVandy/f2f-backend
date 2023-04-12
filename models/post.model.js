@@ -8,6 +8,11 @@ const postSchema= mongoose.Schema({
         trim: true,
         unique: true
     },
+    fullName: {
+        type: String,
+        required: true,
+        trim: true
+    },
     heading: {
         type: String
     },
