@@ -192,7 +192,7 @@ const exportDataToCSV = async (req, res) => {
         passsword: user.password,
         firstName: user.firstName,
         lastName: user.lastName,
-        schoolDistrict: user.schoolDistrict,
+        //schoolDistrict: user.schoolDistrict,
         zipCode: user.zipCode,
         phoneNumer: user.phoneNumer,
         createdAt: user.createdAt,
