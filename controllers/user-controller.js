@@ -66,6 +66,9 @@ const loginUser = async (req, res) => {
         message: "SUCCESS",
         token: token,
         id: user[0]._id.toString(),
+        firstName: user[0].firstName,
+        lastName: user[0].lastName,
+        children: user[0].children,
       });
     } else {
       return res.status(400).json({ message: "Incorrect Password" });
