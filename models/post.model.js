@@ -4,16 +4,15 @@ const ObjectId = require('mongodb').ObjectId;
 const postSchema= mongoose.Schema({
     userId: {
         type: ObjectId,
-        required: true,
         trim: true,
         unique: true
     },
-    fullName: {
+    name: {
         type: String,
         required: true,
         trim: true
     },
-    heading: {
+    title: {
         type: String
     },
     body: {

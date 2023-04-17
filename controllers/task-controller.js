@@ -50,7 +50,7 @@ const getTaskByAttributes = async (req, res) => {
       query.age = age;
     }
     if (priority) {
-      query.priority = { $gt: priority };
+      query.priority = { $lt: priority };
     }
     const tasks = await Task.find(query);
     return res.status(200).json(tasks);
@@ -205,7 +205,7 @@ const getStats = async (req, res) => {
       priorityQuery.age = age;
     }
     if (priority) {
-      priorityQuery.priority = { $gt: priority };
+      priorityQuery.priority = { $lt: priority };
     }
 
     const numAll = await Task.countDocuments(allQuery);

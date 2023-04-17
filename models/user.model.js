@@ -36,9 +36,6 @@ const userSchema= mongoose.Schema({
     },
     children: {
         type: [ObjectId],
-    },
-    posts: {
-        type: [ObjectId]
     }
 }, {
     timestamps: true,
