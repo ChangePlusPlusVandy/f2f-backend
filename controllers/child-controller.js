@@ -54,13 +54,35 @@ const getChildById = async (req, res) => {
 const addChild = async (req, res) => {
   try {
     const newChild = await Child.create(req.body);
-    await newChild.save();
-    return res.status(200).json(newChild);
+    return res.status(200).json(newChild._id);
   } catch (err) {
     console.log(err.message);
     return res.status(500).send({ message: err.message });
   }
 };
+/*
+firstName: {
+        type: String,
+        required: true
+    },
+    disabilities: {
+        type: [String],
+        default: []
+    },
+    birthDate: {
+        type: Date
+    },
+    schoolDistrict:{
+        type: String,
+        required: true,
+        trim: true
+    }, 
+    completedTasks: {
+        type:[ObjectId],
+        default:[]
+    }
+
+*/
 
 //delete a child:
 const deleteChild = async (req, res) => {

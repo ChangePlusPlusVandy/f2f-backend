@@ -13,6 +13,11 @@ const childSchema= mongoose.Schema({
     birthDate: {
         type: Date
     },
+    schoolDistrict:{
+        type: String,
+        required: true,
+        trim: true
+    }, 
     completedTasks: {
         type:[ObjectId],
         default:[]

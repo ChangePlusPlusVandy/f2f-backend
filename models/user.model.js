@@ -24,11 +24,6 @@ const userSchema= mongoose.Schema({
         required: true,
         trim: true
     }, 
-    schoolDistrict:{
-        type: String,
-        required: true,
-        trim: true
-    }, 
     zipCode: {
         type: Number,
         required: true,
@@ -41,9 +36,6 @@ const userSchema= mongoose.Schema({
     },
     children: {
         type: [ObjectId],
-    },
-    posts: {
-        type: [ObjectId]
     }
 }, {
     timestamps: true,

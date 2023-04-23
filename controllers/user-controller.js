@@ -2,7 +2,8 @@ const User = require("../models/user.model.js");
 const Child = require("../models/child.model.js");
 const ObjectId = require("mongodb").ObjectId;
 const fastCsv = require("fast-csv");
-const { Readable } = require('stream');
+const { Readable } = require("stream");
+const jwt = require("jsonwebtoken");
 
 //gets all users in database
 const getAllUsers = async (req, res) => {
@@ -58,9 +59,17 @@ const loginUser = async (req, res) => {
         .json({ message: "Could not find user with specified email" });
     }
     if (user[0].password === password) {
-      return res
-        .status(200)
-        .json({ id: user[0]._id.toString(), message: "SUCCESS" });
+      const token = jwt.sign({ id: user[0]._id }, "secret-key", {
+        expiresIn: "1h",
+      });
+      return res.status(200).json({
+        message: "SUCCESS",
+        token: token,
+        id: user[0]._id.toString(),
+        firstName: user[0].firstName,
+        lastName: user[0].lastName,
+        children: user[0].children,
+      });
     } else {
       return res.status(400).json({ message: "Incorrect Password" });
     }
@@ -185,14 +194,14 @@ const exportDataToCSV = async (req, res) => {
     const csvStream = fastCsv.format({ headers: true });
 
     // Map the user data to CSV format and push it to the stream
-    users.forEach(user => {
+    users.forEach((user) => {
       const row = {
         id: user._id,
         email: user.email,
         passsword: user.password,
         firstName: user.firstName,
         lastName: user.lastName,
-        schoolDistrict: user.schoolDistrict,
+        //schoolDistrict: user.schoolDistrict,
         zipCode: user.zipCode,
         phoneNumer: user.phoneNumer,
         createdAt: user.createdAt,
@@ -207,16 +216,15 @@ const exportDataToCSV = async (req, res) => {
     csvStream.end();
 
     // Set headers for CSV response
-    res.setHeader('Content-disposition', 'attachment; filename=users.csv');
-    res.set('Content-Type', 'text/csv');
+    res.setHeader("Content-disposition", "attachment; filename=users.csv");
+    res.set("Content-Type", "text/csv");
 
     // Pipe CSV stream to response
     csvStream.pipe(res);
   } catch (err) {
     console.error(err);
-    res.status(500).send('Internal server error');
+    res.status(500).send("Internal server error");
   }
-
 };
 
 module.exports = {

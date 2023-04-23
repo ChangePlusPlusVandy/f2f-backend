@@ -111,11 +111,13 @@ const getPostByDisabilities = async (req, res) => {
 const addPost = async (req, res) => {
     try{
         const newPost = await Post.create(req.body);
-        const user = await User.findById(req.body.userId);
+        //const user = await User.findById(req.body.userId);
+        /*
         const updatedUser = await user.updateOne({
             $push: {posts: newPost._id}
         });
         console.log(updatedUser);
+        */
         await newPost.save();
         return res.status(200).json(newPost);
     }

@@ -47,7 +47,7 @@ const getTaskByAttributes = async (req, res) => {
       query.disabilities = { $in: disabilities };
     }
     if (age) {
-      query.age = age;
+      query.age = { $in: age };
     }
     if (priority) {
       query.priority = { $lt: priority };
@@ -201,8 +201,8 @@ const getStats = async (req, res) => {
       priorityQuery.disabilities = { $in: disabilities };
     }
     if (age) {
-      allQuery.age = age;
-      priorityQuery.age = age;
+      allQuery.age = { $in: age };
+      priorityQuery.age = { $in: age };
     }
     if (priority) {
       priorityQuery.priority = { $lt: priority };
